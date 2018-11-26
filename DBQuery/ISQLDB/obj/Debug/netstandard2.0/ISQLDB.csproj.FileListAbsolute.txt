@@ -1,0 +1,9 @@
+E:\Study\vs\DBQuery\DBQuery\ISQLDB\bin\Debug\netstandard2.0\ISQLDB.deps.json
+E:\Study\vs\DBQuery\DBQuery\ISQLDB\bin\Debug\netstandard2.0\ISQLDB.dll
+E:\Study\vs\DBQuery\DBQuery\ISQLDB\bin\Debug\netstandard2.0\ISQLDB.pdb
+E:\Study\vs\DBQuery\DBQuery\ISQLDB\obj\Debug\netstandard2.0\ISQLDB.csproj.CoreCompileInputs.cache
+E:\Study\vs\DBQuery\DBQuery\ISQLDB\obj\Debug\netstandard2.0\ISQLDB.AssemblyInfoInputs.cache
+E:\Study\vs\DBQuery\DBQuery\ISQLDB\obj\Debug\netstandard2.0\ISQLDB.AssemblyInfo.cs
+E:\Study\vs\DBQuery\DBQuery\ISQLDB\obj\Debug\netstandard2.0\ISQLDB.dll
+E:\Study\vs\DBQuery\DBQuery\ISQLDB\obj\Debug\netstandard2.0\ISQLDB.pdb
+E:\Study\vs\DBQuery\DBQuery\ISQLDB\obj\Debug\netstandard2.0\ISQLDB.csprojAssemblyReference.cache
