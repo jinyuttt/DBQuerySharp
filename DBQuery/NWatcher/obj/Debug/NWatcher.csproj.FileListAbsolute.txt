@@ -1,0 +1,9 @@
+E:\Study\vs\DBQuery\DBQuery\NWatcher\obj\Debug\NWatcher.csproj.CoreCompileInputs.cache
+E:\Study\vs\DBQuery\DBQuery\NWatcher\bin\Debug\NWatcher.exe.config
+E:\Study\vs\DBQuery\DBQuery\NWatcher\bin\Debug\NWatcher.exe
+E:\Study\vs\DBQuery\DBQuery\NWatcher\bin\Debug\NWatcher.pdb
+E:\Study\vs\DBQuery\DBQuery\NWatcher\obj\Debug\NWatcher.exe
+E:\Study\vs\DBQuery\DBQuery\NWatcher\obj\Debug\NWatcher.pdb
+E:\Study\vs\DBQuery\DBQuery\nexcs\bin\Debug\NWatcher.exe.config
+E:\Study\vs\DBQuery\DBQuery\nexcs\bin\Debug\NWatcher.exe
+E:\Study\vs\DBQuery\DBQuery\nexcs\bin\Debug\NWatcher.pdb

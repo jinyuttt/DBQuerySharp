@@ -153,13 +153,15 @@ namespace NetSocket
         /// <param name="Offset"></param>
         /// <param name="len"></param>
         /// <param name="isCache"></param>
-        private void DoEventRecvice(byte[]buf,int Offset=0,int len=0,bool isCache=false)
+        private void DoEventRecvice(byte[]buf, EndPoint remote, int Offset=0,int len=0,bool isCache=false)
         {
             AsyncUdpUserToken token=tokenPool.Pop();
             token.Data = buf;
             token.Offset = Offset;
             token.Length = len;
             token.IsFixCache = IsFixCache;
+            token.Remote = remote;
+            token.Socket = socket;
             if (isCache)
             {
                 token.Cache = cacheManager;
@@ -247,7 +249,7 @@ namespace NetSocket
                         }
                     }
                     //不要进行耗时操作
-                    DoEventRecvice(buf,index,len,r);
+                    DoEventRecvice(buf,e.RemoteEndPoint,index,len,r);
                     
                 
             }
@@ -263,21 +265,26 @@ namespace NetSocket
 
             if(e.UserToken==null)
             {
-                //说明是直接发送
+                //说明是直接发送或者不够缓存时新创建的
                 e.SetBuffer(null, 0, 0);
+                e.Completed -= IO_Completed;
             }
             else
             {
+               //来自外部缓存或者本层缓存
                 AsyncUdpUserToken token = e.UserToken as AsyncUdpUserToken;
                 if(null!=token)
                 {
-                    token.FreeCache();
+                    //来自外部数据
+                    if(token.UserInfo== "outcache")
+                    {
+                        token.FreeCache();
+                        e.SetBuffer(null, 0, 0);
+                        e.Completed -= IO_Completed;
+                    }
                 }
-                if(string.IsNullOrEmpty(token.UserInfo))
-                {
-                    //说明是新建的byte[];
-                    e.SetBuffer(null, 0, 0);
-                }
+                
+               
                 //else
                 //{
                 //    //回收缓存;如果发送每次在获取，则要释放
@@ -307,23 +314,30 @@ namespace NetSocket
         {
             SocketAsyncEventArgs socketArgs = pool.Pop();
             socketArgs.RemoteEndPoint = remoteEndPoint;
-            socketArgs.UserToken = null;
-           if(len==0)
+            if (len == 0)
             {
                 len = content.Length;
             }
             //设置发送的内容
             if(socketArgs.Buffer!=null)
             {
-                //释放原理的缓存；UDP发送完成后没有回收缓存区
-                if (IsFixCache)
-                {
-                    bufferManager.FreeBuffer(socketArgs);
-                }
-                else
-                {
-                    bufferManager.GetBuffer(socketArgs);
-                }
+               
+                //先释放通信层的缓存,释放原理的缓存；UDP发送完成后没有回收缓存区
+                    if (IsFixCache)
+                    {
+                        bufferManager.FreeBuffer(socketArgs);
+                    }
+                    else
+                    {
+                        bufferManager.FreePoolBuffer(socketArgs);
+                    }
+                
+                socketArgs.SetBuffer(null, 0, 0);
+               
+            }
+            else
+            {
+                socketArgs.Completed += IO_Completed;
             }
             socketArgs.SetBuffer(content, offset, len);
             if (socketArgs.RemoteEndPoint != null)
@@ -362,25 +376,31 @@ namespace NetSocket
       /// <param name="isCache"></param>
         public void SendPackage(AsyncUdpUserToken token,int isCache = 0)
         {
+            /*
+             * 说明，通信层的缓存不回收，其余的数据均回收
+             * 0.socketArgs.UserToken=null,直接设置buffer=null（标记UserToken=null）
+             * 1.本层缓存，不回收buffer;(不做任何处理，每次有多个）
+             * 2.外部缓存，回收直接设置buffer=null,同时回收使用缓存（每次只会有一个，直接回收）
+             */
             if (0 == isCache)
             {
                 Send(token.Data, token.Remote, token.Offset, token.Length);
             }
             else  if(1==isCache)
             {
-                //使用通信缓存分组发送
+                //使用通信缓存分组发送;
+                //只有这个分支会用到通信缓存
                 int index = token.Offset;
                 do
                 {
                     SocketAsyncEventArgs socketArgs = pool.Pop();
-                   
                     socketArgs.RemoteEndPoint = token.Remote;
                     socketArgs.UserToken = token;
                     token.Socket = socket;
                     token.UserInfo = "udpcache";
-                    if (socketArgs.Buffer == null)
+                    if (socketArgs.Buffer==null)
                     {
-                        //没有分配时才分配
+                        //没有分配缓存时才分配
                         if (IsFixCache)
                         {
                             bufferManager.SetBuffer(socketArgs);
@@ -390,13 +410,13 @@ namespace NetSocket
                             bufferManager.GetBuffer(socketArgs);
                         }
                         socketArgs.Completed += IO_Completed;
+             
                     }
                     if (token.Length == 0)
                     {
                         token.Length = token.Data.Length;
                     }
-                    //
-
+                    //拷贝数据到本缓存,
                     if (socketArgs.Count + index >= token.Length)
                     {
                         Array.Copy(token.Data, token.Offset + index, socketArgs.Buffer, socketArgs.Offset, socketArgs.Count);
@@ -408,9 +428,31 @@ namespace NetSocket
                         byte[] tmp = new byte[token.Length - index];
                         Array.Copy(token.Data, token.Offset + index, tmp, 0, tmp.Length);
                         index += tmp.Length;
-                        token.UserInfo = null;
+                       
+                        //先释放
+                        if (socketArgs.Buffer!=null)
+                        {
+                            //说明来自缓存
+                            if (IsFixCache)
+                            {
+                                bufferManager.FreeBuffer(socketArgs);
+                            }
+                            else
+                            {
+                                bufferManager.FreePoolBuffer(socketArgs);
+                            }
+                            
+                        }
+                        else
+                        {
+                            //说明来自创建
+                            socketArgs.SetBuffer(null, 0, 0);
+                        }
                         socketArgs.SetBuffer(tmp, 0, tmp.Length);
+                        socketArgs.UserToken = null;
                     }
+                    //
+                  
                     if (socketArgs.RemoteEndPoint != null)
                     {
                         if (!socket.SendToAsync(socketArgs))
@@ -419,35 +461,36 @@ namespace NetSocket
                         }
                     }
                 } while (index < token.Length);
+                token.FreeCache();//用完外部的了；
             }
             else if(2==isCache)
             {
                 SocketAsyncEventArgs socketArgs = pool.Pop();
                 socketArgs.RemoteEndPoint = token.Remote;
-                socketArgs.UserToken = token;
                 token.UserInfo = "outcache";
                 if(token.Length==0)
                 {
                     token.Length = token.Data.Length;
                 }
-
                 if (socketArgs.Buffer != null)
                 {
-                    //先释放原理通信层的缓存
                     if (IsFixCache)
-                    {
-                        bufferManager.FreeBuffer(socketArgs);
-                    }
-                    else
-                    {
-                        bufferManager.FreePoolBuffer(socketArgs);
-                    }
+                        {
+                            bufferManager.FreeBuffer(socketArgs);
+                        }
+                        else
+                        {
+                            bufferManager.FreePoolBuffer(socketArgs);
+                        }
+                    
+                    socketArgs.SetBuffer(null, 0, 0);
                 }
                 else
                 {
                     socketArgs.Completed += IO_Completed;
                 }
                 //持续使用外部缓存发送，发送后要释放
+                socketArgs.UserToken = token;
                 socketArgs.SetBuffer(token.Data, token.Offset, token.Length);
                 if (socketArgs.RemoteEndPoint != null)
                 {

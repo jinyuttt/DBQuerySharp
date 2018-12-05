@@ -1,20 +1,17 @@
-﻿using ISQLDB;
-using System;
-using System.Collections.Concurrent;
+﻿using DBModel;
+using ISQLDB;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
-using System.Threading;
 
 namespace SQLDB
 {
 
-   /// <summary>
-   /// 采用自定义连接池实现
-   /// 需要通过配置文件配置连接池信息
-   /// 
-   /// </summary>
-   public class DBAcessPool: SQLAcess
+    /// <summary>
+    /// 采用自定义连接池实现
+    /// 需要通过配置文件配置连接池信息
+    /// 
+    /// </summary>
+    public class DBAcessPool: SQLAcess
     {
         /// <summary>
         /// 当前连接
@@ -32,7 +29,19 @@ namespace SQLDB
         /// </summary>
         public IDbConnection Current { get { return Connection; } }
 
+        /// <summary>
+        /// DB名称（配置文件名称）
+        /// </summary>
         public string DBName { get { return poolCfgName; } set { poolCfgName = value; } }
+
+        /// <summary>
+        /// 设置配置目录
+        /// </summary>
+        /// <param name="CfgDir"></param>
+        public static void SetConfigDir(string CfgDir)
+        {
+            PoolFactory.Instance.PoolCfgPath = CfgDir;
+        }
 
         public override void Close()
         {
@@ -114,10 +123,14 @@ namespace SQLDB
             return NewCommand(NewConnect(), sql);
         }
 
+        /// <summary>
+        /// 获取连接
+        /// </summary>
+        /// <returns></returns>
         public override IDbConnection NewConnect()
         {
            
-            IDbConnection con = PoolFactory.Instance.GetDbConnection();
+            IDbConnection con = PoolFactory.Instance.GetDbConnection(DBName);
             con.Open();
             Connection = con;
             return con;

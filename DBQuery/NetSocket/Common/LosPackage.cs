@@ -22,6 +22,7 @@ namespace NetSocket
    public class LosPackage:UDPPackage
     {
       public  byte[] PData = new byte[13];
+      
         public LosPackage(byte[]data)
         {
             PData = data;

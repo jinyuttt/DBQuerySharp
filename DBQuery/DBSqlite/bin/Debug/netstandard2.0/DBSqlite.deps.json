@@ -36,7 +36,15 @@
           }
         }
       },
+      "DBModel/1.0.0": {
+        "runtime": {
+          "DBModel.dll": {}
+        }
+      },
       "ISQLDB/1.0.0": {
+        "dependencies": {
+          "DBModel": "1.0.0"
+        },
         "runtime": {
           "ISQLDB.dll": {}
         }
@@ -76,6 +84,11 @@
       "sha512": "sha512-eZuKsu2eriGsxsAAlVslcA4ylLnFmfpA3iWeUyU82RNz4yDYlwLAA/zkbxejCEO+GdTd0zSBN4kDHneM39PEsg==",
       "path": "system.data.sqlite.core/1.0.109.2",
       "hashPath": "system.data.sqlite.core.1.0.109.2.nupkg.sha512"
+    },
+    "DBModel/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     },
     "ISQLDB/1.0.0": {
       "type": "project",

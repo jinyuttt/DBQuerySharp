@@ -1,27 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace NetSocket
 {
-    public delegate void RecvicePoolData(object sender, long id, byte[] data, RecviceState state);
-    public delegate void PushLossPackage(object sender, LosPackage[] list);
+   
 
     public enum RecviceState
     {
         sucess,
         fail
     }
+
+    /// <summary>
+    /// 一组数据
+    /// </summary>
   public  class RecvicePool
     {
         public event RecvicePoolData OnReviceData;
         public event PushLossPackage OnLossData;
 
-        public RecviceBuffer[] buf = new RecviceBuffer[int.MaxValue];
+        public RecviceBuffer[] buf =null;
         public long id = 0;
         public long sum = 0;
+        public EndPoint remote;
         private Dictionary<long, LosPackage> dicLosss = new Dictionary<long, LosPackage>();
         private int max =0;
         AutoResetEvent resetEvent = null;
@@ -29,10 +34,13 @@ namespace NetSocket
         byte[] currten = null;
         private const int MaxWaitTime = 10;
         private const int MaxBufferSize = 100*1024*1024;//100M;
+        private const int MaxOneRecviceSize = 100 * 1024 * 1024;//1G
+
         public DateTime LastTime { get; set; }
-        public RecvicePool()
+        public RecvicePool(int num)
         {
             resetEvent = new AutoResetEvent(false);
+            buf = new RecviceBuffer[num];
             Check();
         }
 
@@ -56,6 +64,10 @@ namespace NetSocket
                 }
             }
             LastTime = DateTime.Now;
+            if(buf==null)
+            {
+                return null;
+            }
             if (buf[package.packageSeq] == null)
             {
                 buf[package.packageSeq] = new RecviceBuffer() { data = package.data };
@@ -88,12 +100,17 @@ namespace NetSocket
             return list;
         }
 
+
+        /// <summary>
+        /// 验证接收情况
+        /// </summary>
         private void Check()
         {
-            
+
+            Console.WriteLine("check");
             Task.Factory.StartNew(() =>
             {
-                resetEvent.WaitOne(100);
+                resetEvent.WaitOne();
                 long cur = 0;
                 bool sucess = false;
                 for(int i=0;i<buf.Length;i++)
@@ -104,10 +121,10 @@ namespace NetSocket
                         Array.Copy(buf[i].data, 0, currten, cur, buf[i].data.Length);
                         cur += buf[i].data.Length;
                     }
-                    else if(cur==packageSum||cur>=MaxBufferSize)
+                     if(cur==packageSum||cur>=MaxBufferSize)
                     {
                         //接收完成
-                        byte[] currten = new byte[packageSum];
+                       // byte[] currten = new byte[packageSum];
                         sucess = true;
                         if (OnReviceData!=null)
                         {
@@ -132,7 +149,7 @@ namespace NetSocket
                         {
                             LosPackage[] lostTmp = new LosPackage[dicLosss.Count];
                             dicLosss.Values.CopyTo(lostTmp, 0);
-                            OnLossData(this, lostTmp);
+                            OnLossData(this,remote, lostTmp);
                         }
                         break;
                     }
@@ -146,12 +163,16 @@ namespace NetSocket
             });
         }
 
+        /// <summary>
+        /// 清除数据
+        /// </summary>
         public void Clear()
         {
             this.resetEvent.Set();
             this.buf = null;
             this.currten = null;
             this.dicLosss.Clear();
+            GC.Collect();
         }
 
     }

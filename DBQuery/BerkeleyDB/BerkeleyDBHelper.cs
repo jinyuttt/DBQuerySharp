@@ -24,6 +24,14 @@ namespace BDB
             Init();
         }
 
+        /// <summary>
+        /// 重新初始化
+        /// </summary>
+        public void Reset()
+        {
+            Init();
+        }
+
         #region Put 
         public void Put(TKey key,TValue  value, Transaction txn=null)
         {

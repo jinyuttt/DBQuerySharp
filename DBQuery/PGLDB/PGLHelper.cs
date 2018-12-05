@@ -6,6 +6,7 @@ using System.Data;
 using System.Text;
 using System.Collections.Concurrent;
 using System.Threading;
+using DBModel;
 
 namespace PGLDB
 {

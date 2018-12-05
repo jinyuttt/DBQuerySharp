@@ -31,6 +31,8 @@ namespace BDB
 
         private string db_backupdir = "BDBBackUP";
 
+        private string DBRootDir = "";
+
         private DatabaseEnvironment env = null;
         private Database db = null;
         Sequence seq;
@@ -52,7 +54,7 @@ namespace BDB
         protected string dbName = "dbd";
         private uint mPort;
 
-        public string EnvHome { get { return home; } }
+        public string EnvHome { get { return home; } set { home=value; } }
 
         /*
          * Set up environment.
@@ -106,6 +108,7 @@ namespace BDB
 
         private void CheckDir()
         {
+           
             if (!Directory.Exists(home))
             {
                 Directory.CreateDirectory(home);

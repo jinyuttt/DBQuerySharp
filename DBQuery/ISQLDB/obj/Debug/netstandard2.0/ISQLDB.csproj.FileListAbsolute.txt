@@ -7,3 +7,6 @@ E:\Study\vs\DBQuery\DBQuery\ISQLDB\obj\Debug\netstandard2.0\ISQLDB.AssemblyInfo.
 E:\Study\vs\DBQuery\DBQuery\ISQLDB\obj\Debug\netstandard2.0\ISQLDB.dll
 E:\Study\vs\DBQuery\DBQuery\ISQLDB\obj\Debug\netstandard2.0\ISQLDB.pdb
 E:\Study\vs\DBQuery\DBQuery\ISQLDB\obj\Debug\netstandard2.0\ISQLDB.csprojAssemblyReference.cache
+E:\Study\vs\DBQuery\DBQuery\ISQLDB\bin\Debug\netstandard2.0\DBModel.dll
+E:\Study\vs\DBQuery\DBQuery\ISQLDB\bin\Debug\netstandard2.0\DBModel.pdb
+E:\Study\vs\DBQuery\DBQuery\ISQLDB\obj\Debug\netstandard2.0\ISQLDB.csproj.CopyComplete

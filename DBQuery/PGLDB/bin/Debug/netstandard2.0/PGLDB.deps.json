@@ -56,7 +56,15 @@
         }
       },
       "System.ValueTuple/4.5.0": {},
+      "DBModel/1.0.0": {
+        "runtime": {
+          "DBModel.dll": {}
+        }
+      },
       "ISQLDB/1.0.0": {
+        "dependencies": {
+          "DBModel": "1.0.0"
+        },
         "runtime": {
           "ISQLDB.dll": {}
         }
@@ -110,6 +118,11 @@
       "sha512": "sha512-xZtSZNEHGa+tGsKuP4sh257vxJ/yemShz4EusmomkynMzuEDDjVaErBNewpzEF6swUgbcrSQAX3ELsEp1zCOwA==",
       "path": "system.valuetuple/4.5.0",
       "hashPath": "system.valuetuple.4.5.0.nupkg.sha512"
+    },
+    "DBModel/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     },
     "ISQLDB/1.0.0": {
       "type": "project",

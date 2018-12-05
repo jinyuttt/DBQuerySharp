@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Hikari\Hikari.csproj" />
     <ProjectReference Include="..\ISQLDB\ISQLDB.csproj" />
-    <ProjectReference Include="F:\迅雷下载\Hikari-master\Hikari\Hikari.csproj" />
   </ItemGroup>
 
 </Project>

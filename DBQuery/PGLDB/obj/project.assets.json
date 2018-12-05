@@ -70,9 +70,22 @@
           "lib/netstandard2.0/_._": {}
         }
       },
+      "DBModel/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/DBModel.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DBModel.dll": {}
+        }
+      },
       "ISQLDB/1.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
+        "dependencies": {
+          "DBModel": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/ISQLDB.dll": {}
         },
@@ -339,6 +352,11 @@
         "version.txt"
       ]
     },
+    "DBModel/1.0.0": {
+      "type": "project",
+      "path": "../DBModel/DBModel.csproj",
+      "msbuildProject": "../DBModel/DBModel.csproj"
+    },
     "ISQLDB/1.0.0": {
       "type": "project",
       "path": "../ISQLDB/ISQLDB.csproj",
@@ -370,6 +388,7 @@
       ],
       "configFilePaths": [
         "C:\\Users\\jinyu\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 18.1.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -377,6 +396,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "d:\\Program Files\\DevExpress 18.1\\Components\\System\\Components\\Packages": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

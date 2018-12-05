@@ -25,6 +25,16 @@
         "build": {
           "build/netstandard2.0/NETStandard.Library.targets": {}
         }
+      },
+      "DBModel/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/DBModel.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DBModel.dll": {}
+        }
       }
     }
   },
@@ -168,10 +178,16 @@
         "netstandard.library.2.0.3.nupkg.sha512",
         "netstandard.library.nuspec"
       ]
+    },
+    "DBModel/1.0.0": {
+      "type": "project",
+      "path": "../DBModel/DBModel.csproj",
+      "msbuildProject": "../DBModel/DBModel.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETStandard,Version=v2.0": [
+      "DBModel >= 1.0.0",
       "NETStandard.Library >= 2.0.3"
     ]
   },
@@ -193,6 +209,7 @@
       ],
       "configFilePaths": [
         "C:\\Users\\jinyu\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 18.1.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -200,11 +217,16 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "d:\\Program Files\\DevExpress 18.1\\Components\\System\\Components\\Packages": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "netstandard2.0": {
-          "projectReferences": {}
+          "projectReferences": {
+            "E:\\Study\\vs\\DBQuery\\DBQuery\\DBModel\\DBModel.csproj": {
+              "projectPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\DBModel\\DBModel.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

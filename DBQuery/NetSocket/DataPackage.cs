@@ -54,30 +54,32 @@ namespace NetSocket
         /// </summary>
         public int DataLen { get; set; }
 
+        public int PackageNum { get; set; }
 
-        public const int headLen = 31;
+        public const int HeadLen = 35;
 
         public byte[] Head=null;
 
         public UDPDataPackage()
         {
             this.packageType = 0;
-            Head = new byte[headLen];
+            Head = new byte[HeadLen];
         }
 
         public  void Pack()
         {
            // 1字节数据类型 + 8字节通信标识 + 8字节包ID + 8字节总长 + 4字节包序列 + 2字节本包长 + 数据区
-            packData = new byte[headLen + data.Length];
+            packData = new byte[HeadLen + data.Length];
             Head[0] = packageType;
             Array.Copy(BitConverter.GetBytes(socketID), 0, Head, 1, 8);
             Array.Copy(BitConverter.GetBytes(packageID), 0, Head, 9, 8);
             Array.Copy(BitConverter.GetBytes(packageSum), 0, Head, 17, 8);
             Array.Copy(BitConverter.GetBytes(packageSeq), 0, Head, 25, 4);
             Array.Copy(BitConverter.GetBytes(pacakeLen), 0, Head, 29, 2);
+            Array.Copy(BitConverter.GetBytes(PackageNum), 0, Head, 31, 4);
             //
-            Array.Copy(Head, packData, headLen);
-            Array.Copy(data, 0, packData,headLen,data.Length);
+            Array.Copy(Head, packData, HeadLen);
+            Array.Copy(data, 0, packData,HeadLen,data.Length);
 
         }
 
@@ -90,26 +92,32 @@ namespace NetSocket
         public void Pack(byte[]buf,int offset,int len)
         {
             // 1字节数据类型 + 8字节通信标识 + 8字节包ID + 8字节总长 + 4字节包序列 + 2字节本包长 + 数据区
+            if (DataLen == 0)
+            {
+                DataLen = data.Length;
+            }
+            int curLen = DataLen>len - HeadLen ? len - HeadLen : DataLen;
+            pacakeLen = (short)curLen;
             packData = buf;
             Head[0] = packageType;
+            this.packageSeq++;
             Array.Copy(BitConverter.GetBytes(socketID), 0, Head, 1, 8);
             Array.Copy(BitConverter.GetBytes(packageID), 0, Head, 9, 8);
             Array.Copy(BitConverter.GetBytes(packageSum), 0, Head, 17, 8);
             Array.Copy(BitConverter.GetBytes(packageSeq), 0, Head, 25, 4);
             Array.Copy(BitConverter.GetBytes(pacakeLen), 0, Head, 29, 2);
+            Array.Copy(BitConverter.GetBytes(PackageNum), 0, Head, 31, 4);
             //
-            Array.Copy(Head,0, packData,offset, headLen);
-            if(DataLen==0)
+            Array.Copy(Head,0, packData,offset, HeadLen);
+           
+            if(DataLen > len-HeadLen)
             {
-                DataLen = data.Length;
-            }
-            if(DataLen > len-headLen)
-            {
-                Array.Copy(data, Offset, packData, offset + headLen, len-headLen);
+                //数据长度大于buf长度可装长度
+                Array.Copy(data, Offset, packData, offset + HeadLen, len-HeadLen);
             }
             else
             {
-                Array.Copy(data, Offset, packData, offset + headLen, DataLen);
+                Array.Copy(data, Offset, packData, offset + HeadLen, DataLen);
             }
           
 
@@ -121,20 +129,21 @@ namespace NetSocket
             {
                 len = pData.Length;
             }
-            if(len<headLen)
+            if(len<HeadLen)
             {
                 return;
             }
             packData = pData;
-            data = new byte[len - headLen];
-            Array.Copy(packData,offset, Head,0, headLen);
-            Array.Copy(packData,offset+ headLen, data, 0, len);
+            data = new byte[len - HeadLen];
+            Array.Copy(packData,offset, Head,0, HeadLen);
+            Array.Copy(packData,offset+ HeadLen, data, 0, data.Length);
             //
             socketID = BitConverter.ToInt64(Head, 1);
             packageID = BitConverter.ToInt64(Head, 9);
             packageSum= BitConverter.ToInt64(Head, 17);
             packageSeq = BitConverter.ToInt32(Head, 25);
             pacakeLen= BitConverter.ToInt16(Head, 29);
+            PackageNum= BitConverter.ToInt32(Head, 31);
 
         }
     }

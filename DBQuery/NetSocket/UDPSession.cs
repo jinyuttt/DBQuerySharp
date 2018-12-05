@@ -11,6 +11,7 @@ using System.Net;
 using System.Text;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace NetSocket
 {
@@ -25,6 +26,7 @@ namespace NetSocket
   public  class UDPSession
     {
         UDPPack uDPPack = null;
+
         public bool EnableHeart { get; set; }
 
         /// <summary>
@@ -49,6 +51,7 @@ namespace NetSocket
         /// 这里是2个相同的缓存区；合理设置
         /// </summary>
         public int TotalBufSize { get; set; }
+      
         /// <summary>
         /// 缓存数据实体
         /// 默认100
@@ -56,27 +59,20 @@ namespace NetSocket
         public int TokenMaxLeftNum { get; set; }
 
         public event OnReceiveUdpData OnDataReceived;
-        private const int MByte = 1024 * 1024;
-        private const int WaitTime = 10;//10s;
-    
+
+        private const int MByte = 1024 * 1024;//运算
+
+        private const int ValidateTime = 10;//验证每个端点的
+         private   AutoResetEvent resetEvent = null;//控制端口验证，关闭时可以快速退出
+         private  volatile bool isValidatePoint = true;
+
+
         /// <summary>
         /// 发送队列
         /// </summary>
         ConcurrentDictionary<long, SendQueue> dicSendQueue = null;
 
-        /// <summary>
-        /// 接收队列
-        /// </summary>
-        ConcurrentDictionary<long, RecvicePool> dicPool = null;
-
-        /// <summary>
-        /// 接收完成序列
-        /// </summary>
-        ConcurrentDictionary<long, DateTime> dicSucess = null;
-
-        private const int MaxWaitSucess = 20;//维持接收完成的时间
-
-        private DateTime minTime = DateTime.Now;//完成的ID移除
+        private SocketEndPoint socketEndPoint = null;
 
         public UDPSession()
         {
@@ -87,9 +83,14 @@ namespace NetSocket
             {
                 TokenMaxLeftNum = 100;
             }
-            dicSucess = new ConcurrentDictionary<long, DateTime>();
+            socketEndPoint = new SocketEndPoint();
+            resetEvent = new AutoResetEvent(false);
 
         }
+
+        /// <summary>
+        /// 绑定方法，必须调用
+        /// </summary>
 
         public void Bind()
         {
@@ -104,8 +105,37 @@ namespace NetSocket
             uDPPack.IsProtolUnPack = false;
             uDPPack.Bind();
             uDPPack.OnDataReceived += UDPSocket_OnDataReceived;
+            socketEndPoint.OnDataReceived += SocketEndPoint_OnDataReceived;
+            socketEndPoint.OnLossData += SocketEndPoint_OnLossData;
             StartReceive();
 
+        }
+
+        private void SocketEndPoint_OnLossData(object sender,object remote, LosPackage[] list)
+        {
+            AsyncUdpUserToken token = new AsyncUdpUserToken();
+            IPEndPoint endPoint = remote as IPEndPoint;
+            token.Remote = endPoint;
+            foreach (LosPackage los in list)
+            {
+                los.Pack();
+                token.Data = los.PData;
+                uDPPack.Send(token, 0);
+
+            }
+        }
+
+        /// <summary>
+        /// 接收完成
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="token"></param>
+        private void SocketEndPoint_OnDataReceived(object sender, AsyncUdpUserToken token)
+        {
+            if (OnDataReceived != null)
+            {
+                OnDataReceived(this, token);
+            }
         }
 
         /// <summary>
@@ -115,52 +145,32 @@ namespace NetSocket
         /// <param name="token"></param>
         private void UDPSocket_OnDataReceived(object sender, AsyncUdpUserToken token)
         {
-            if (dicPool == null)
+            Console.WriteLine("接收数据个数:" + token.Length);
+            switch (token.Data[token.Offset])
             {
-                dicPool = new ConcurrentDictionary<long, RecvicePool>();
-            }
-          
-           switch (token.Data[token.Offset])
-            {
+                
                 case 0:
                     {
                         //数据
-                       
-                        UDPDataPackage package = new UDPDataPackage();
-                        package.UnPack(token.Data, token.Offset, token.Length);
-                        RecvicePool pool = null;
-                        if (dicSucess.ContainsKey(package.packageID))
+                        socketEndPoint.Add(token);
+                        if(isValidatePoint)
                         {
-                            return;//无用数据了；
-                        }
-                            if (dicPool.TryGetValue(package.packageID, out pool))
-                        {
-                            pool.Add(package);
-                        }
-                        else
-                        {
-                            pool = new RecvicePool();
-                            pool.OnLossData += Pool_OnLossData;
-                            pool.OnReviceData += Pool_OnReviceData;
-                            dicPool[package.packageID] = pool;
-                            pool.Add(package);
+                            isValidatePoint = false;
+                            EndPointValidate();
                         }
                     }
                     break;
                 case 1:
                     {
                         //接收完成序列
+                        Console.WriteLine("接收小包完成返回");
                         SendQueue sendQueue = null;
                         LosPackage rsp = new LosPackage(token.Data);
-                       
                         if (dicSendQueue.TryGetValue(rsp.packageID,out sendQueue))
                         {
                             sendQueue.Add(rsp.packageSeq);
                         }
-                        if (dicSucess.ContainsKey(rsp.packageID))
-                        {
-                            return;//无用数据了；
-                        }
+                       
 
                     }
                     break;
@@ -168,91 +178,36 @@ namespace NetSocket
                 case 2:
                     {
                         //丢失序列
+                        Console.WriteLine("接收丢失请求");
                         SendQueue sendQueue = null;
                         LosPackage rsp = new LosPackage(token.Data);
-                        if (dicSucess.ContainsKey(rsp.packageID))
-                        {
-                            return;//无用数据了；
-                        }
                         if (dicSendQueue.TryGetValue(rsp.packageID, out sendQueue))
                         {
                             AsyncUdpUserToken  resend=  sendQueue.GetAsyncUdpUserToken(rsp.packageSeq);
                             if(resend!=null)
-                               uDPPack.Send(resend, 0);
+                             uDPPack.Send(resend, 0);
                         }
                     }
                     break;
                 case 3:
                     {
                         //完成接收
+                     
                         SendQueue sendQueue = null;
                         LosPackage rsp = new LosPackage(token.Data);
-                       
                         if (dicSendQueue.TryRemove(rsp.packageID, out sendQueue))
                         {
                             sendQueue.Clear();
                         }
+                        Console.WriteLine("接收完成返回:"+rsp.packageID);
                     }
                     break;
             }
-            CheckSucess();
-
-        }
-
-        /// <summary>
-        /// 接收完成的数据
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="id"></param>
-        /// <param name="data"></param>
-        /// <param name="state"></param>
-        private void Pool_OnReviceData(object sender, long id, byte[] data, RecviceState state)
-        {
-            if (OnDataReceived != null)
-            {
-                AsyncUdpUserToken token = new AsyncUdpUserToken();
-                token.Data = data;
-                Task.Factory.StartNew(() =>
-                {
-                    OnDataReceived(this, token);
-                });
-                RecvicePool recvice = sender as RecvicePool;
-                if(recvice!=null)
-                {
-                    recvice.Clear();
-                }
-                recvice.OnLossData -= Pool_OnLossData;
-                recvice.OnReviceData -= Pool_OnReviceData;
-                dicPool.TryRemove(id, out recvice);
-                dicSucess[id] = DateTime.Now;
-                AsyncUdpUserToken suecess = new AsyncUdpUserToken();
-                LosPackage package = new LosPackage();
-                package.packageID = id;
-                package.Pack();
-                suecess.Data = package.PData;
-                uDPPack.Send(suecess, 0);
-                Console.WriteLine("sucess:" + id);
-            }
-        }
-
-        /// <summary>
-        /// 请求发送丢失数据
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="list"></param>
-        private void Pool_OnLossData(object sender, LosPackage[] list)
-        {
-            AsyncUdpUserToken token = new AsyncUdpUserToken();
-            foreach (LosPackage los in list)
-            {
-                los.Pack();
-                token.Data = los.PData;
-                uDPPack.Send(token, 0);
-
-            }
            
-           
+
         }
+
+       
 
         /// <summary>
         /// 接收
@@ -276,7 +231,9 @@ namespace NetSocket
             }
             //使用了分包缓存
             token.ListPack = new List<AsyncUdpUserToken>();
+            //
             uDPPack.SendProtol(token);
+            //
             if (dicSendQueue == null)
             {
                 dicSendQueue = new ConcurrentDictionary<long, SendQueue>();
@@ -294,18 +251,27 @@ namespace NetSocket
         /// <param name="list"></param>
         private void SendList_PushLossReset(object sender, AsyncUdpUserToken[] list)
         {
-            foreach(AsyncUdpUserToken token in list)
+
+
+          //  Console.WriteLine("丢失重发");
+            if (list.Length > 0)
             {
-                uDPPack.Send(token, 0);
+               //说明100ms没有收到
+              //  Console.WriteLine("丢失重发：");
+
             }
-            SendQueue sendQueue = sender as SendQueue;
-            if(sendQueue!=null)
+            foreach (AsyncUdpUserToken token in list)
             {
-                //已经全部接收了，没有丢失
-                sendQueue.Clear();
-                sendQueue.PushLossReset -= SendList_PushLossReset;
+                 uDPPack.Send(token, 0);
             }
-            dicSucess[sendQueue.packageID] = DateTime.Now;
+            //SendQueue sendQueue = sender as SendQueue;
+            //if(sendQueue!=null)
+            //{
+            //    //已经全部接收了，没有丢失
+            //    sendQueue.Clear();
+            //    sendQueue.PushLossReset -= SendList_PushLossReset;
+            //}
+
         }
 
 
@@ -317,13 +283,13 @@ namespace NetSocket
         /// <param name="port"></param>
         public void SendPackage(byte[] data, string host, int port)
         {
-                AsyncUdpUserToken token = new AsyncUdpUserToken();
-                token.Data = data;
-                token.Offset = 0;
-                token.Length = data.Length;
-                token.Remote = new IPEndPoint(IPAddress.Parse(host), port);
-                SendPackage(token);
-            }
+            AsyncUdpUserToken token = new AsyncUdpUserToken();
+            token.Data = data;
+            token.Offset = 0;
+            token.Length = data.Length;
+            token.Remote = new IPEndPoint(IPAddress.Parse(host), port);
+            SendPackage(token);
+        }
 
 
         /// <summary>
@@ -331,50 +297,30 @@ namespace NetSocket
         /// </summary>
         private void Close()
         {
+            resetEvent.Set();
             uDPPack.Close();
-            this.dicPool.Clear();
             this.dicSendQueue.Clear();
-            this.dicSucess.Clear();
+            socketEndPoint.Clear();
+            resetEvent.Set();
            
         }
 
-        /// <summary>
-        /// 移除到期成功ID
-        /// </summary>
-        private void CheckSucess()
+        private void EndPointValidate()
         {
-            if((DateTime.Now-minTime).TotalSeconds<MaxWaitSucess)
-            {
-                return;
-            }
-            long id = -1;
-            DateTime date;
-            minTime = DateTime.Now;
-            ConcurrentBag<long> bag = new ConcurrentBag<long>();
-            Parallel.ForEach(dicSucess, (kv) =>
-            {
-                if ((DateTime.Now - kv.Value).TotalSeconds > MaxWaitSucess)
+             Task.Factory.StartNew(() => {
+                if(!resetEvent.WaitOne(ValidateTime * 60 * 1000))
                 {
-                    bag.Add(kv.Key);
-                    if(minTime>kv.Value)
-                    {
-                        minTime = kv.Value;
-                    }
+                    socketEndPoint.Validate();
+                    EndPointValidate();
                 }
+
             });
-            do
-            {
-                if (bag.TryTake(out id))
-                {
-                    dicSucess.TryRemove(id, out date);
-                }
-            } while (!bag.IsEmpty);
         }
-         
 
-    
 
-      
+
+
+
 
     }
 }

@@ -25,16 +25,6 @@
         "build": {
           "build/netstandard2.0/NETStandard.Library.targets": {}
         }
-      },
-      "ISrvNetSocket/1.0.0": {
-        "type": "project",
-        "framework": ".NETStandard,Version=v2.0",
-        "compile": {
-          "bin/placeholder/ISrvNetSocket.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/ISrvNetSocket.dll": {}
-        }
       }
     }
   },
@@ -178,16 +168,10 @@
         "netstandard.library.2.0.3.nupkg.sha512",
         "netstandard.library.nuspec"
       ]
-    },
-    "ISrvNetSocket/1.0.0": {
-      "type": "project",
-      "path": "F:\\迅雷下载\\StremCloud-master\\StreamCloud\\SrvNetSocket\\ISrvNetSocket.csproj",
-      "msbuildProject": "F:\\迅雷下载\\StremCloud-master\\StreamCloud\\SrvNetSocket\\ISrvNetSocket.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETStandard,Version=v2.0": [
-      "ISrvNetSocket >= 1.0.0",
       "NETStandard.Library >= 2.0.3"
     ]
   },
@@ -209,6 +193,7 @@
       ],
       "configFilePaths": [
         "C:\\Users\\jinyu\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 18.1.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -216,15 +201,12 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "d:\\Program Files\\DevExpress 18.1\\Components\\System\\Components\\Packages": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "netstandard2.0": {
-          "projectReferences": {
-            "F:\\迅雷下载\\StremCloud-master\\StreamCloud\\SrvNetSocket\\ISrvNetSocket.csproj": {
-              "projectPath": "F:\\迅雷下载\\StremCloud-master\\StreamCloud\\SrvNetSocket\\ISrvNetSocket.csproj"
-            }
-          }
+          "projectReferences": {}
         }
       },
       "warningProperties": {

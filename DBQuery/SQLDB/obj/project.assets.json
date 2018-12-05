@@ -1316,6 +1316,16 @@
           "lib/netstandard1.3/System.Xml.XmlDocument.dll": {}
         }
       },
+      "DBModel/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/DBModel.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DBModel.dll": {}
+        }
+      },
       "Hikari/1.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
@@ -1332,6 +1342,9 @@
       "ISQLDB/1.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
+        "dependencies": {
+          "DBModel": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/ISQLDB.dll": {}
         },
@@ -4722,10 +4735,15 @@
         "system.xml.xmldocument.nuspec"
       ]
     },
+    "DBModel/1.0.0": {
+      "type": "project",
+      "path": "../DBModel/DBModel.csproj",
+      "msbuildProject": "../DBModel/DBModel.csproj"
+    },
     "Hikari/1.0.0": {
       "type": "project",
-      "path": "F:\\迅雷下载\\Hikari-master\\Hikari\\Hikari.csproj",
-      "msbuildProject": "F:\\迅雷下载\\Hikari-master\\Hikari\\Hikari.csproj"
+      "path": "../Hikari/Hikari.csproj",
+      "msbuildProject": "../Hikari/Hikari.csproj"
     },
     "ISQLDB/1.0.0": {
       "type": "project",
@@ -4758,6 +4776,7 @@
       ],
       "configFilePaths": [
         "C:\\Users\\jinyu\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 18.1.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -4765,16 +4784,17 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "d:\\Program Files\\DevExpress 18.1\\Components\\System\\Components\\Packages": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "netstandard2.0": {
           "projectReferences": {
+            "E:\\Study\\vs\\DBQuery\\DBQuery\\Hikari\\Hikari.csproj": {
+              "projectPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\Hikari\\Hikari.csproj"
+            },
             "E:\\Study\\vs\\DBQuery\\DBQuery\\ISQLDB\\ISQLDB.csproj": {
               "projectPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\ISQLDB\\ISQLDB.csproj"
-            },
-            "F:\\迅雷下载\\Hikari-master\\Hikari\\Hikari.csproj": {
-              "projectPath": "F:\\迅雷下载\\Hikari-master\\Hikari\\Hikari.csproj"
             }
           }
         }

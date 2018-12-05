@@ -22,7 +22,7 @@ namespace NetSocket
     /// </summary>
   public  class UDPPack
     {
-        UDPSocket uDPSocket = null;
+        UDPTaskSocket uDPSocket = null;
         public bool EnableHeart { get; set; }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace NetSocket
             {
                 uDPSocket.Close();
             }
-            uDPSocket = new UDPSocket();
+            uDPSocket = new UDPTaskSocket();
             uDPSocket.BufferSize = BufferSize;
             uDPSocket.EnableHeart = EnableHeart;
             uDPSocket.Host = Host;
@@ -111,7 +111,7 @@ namespace NetSocket
         {
             if(IsProtolUnPack)
             {
-                token.Offset = token.Offset + UDPDataPackage.headLen;
+                token.Offset = token.Offset + UDPDataPackage.HeadLen;
             }
             if(OnDataReceived!=null)
             {

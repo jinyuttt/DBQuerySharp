@@ -243,7 +243,7 @@ namespace NetSocket
         }
 
         /// <summary>
-        /// 缓存分包
+        /// 缓存分包；如果不到缓存长度就创建byte[],通过isUse
         /// </summary>
         /// <param name="token"></param>
         /// <param name="index"></param>
@@ -280,8 +280,10 @@ namespace NetSocket
                 token.DataPackage.packageSeq = -1;
                 token.DataPackage.packageSum = token.Length;
                 token.DataPackage.data = token.Data;
-                token.DataPackage.DataLen = token.Data.Length;
+                token.DataPackage.DataLen = token.Length;
                 token.DataPackage.Offset = token.Offset;
+                token.PackageNum = token.Length / UdpPackSize + 1;
+                token.DataPackage.PackageNum = token.PackageNum;
             }
             if (index + UdpPackSize <= token.Length)
             {
@@ -290,11 +292,11 @@ namespace NetSocket
                 {
                     buf = new byte[UdpPackSize];//与
                 }
-                token.Offset = token.Offset + index;
+                token.Offset = token.Offset + index;//移动偏移量
                 token.DataPackage.Pack(buf, 0, UdpPackSize);
                 userToken.Data = token.DataPackage.data;
-
-               // Array.Copy(token.Data, token.Offset + index, buf, 0, UdpPackSize);
+                userToken.Length = UdpPackSize;
+                // Array.Copy(token.Data, token.Offset + index, buf, 0, UdpPackSize);
                 index += UdpPackSize;
                 userToken.Cache = cacheUDP;
                 userToken.TokenPool = tokenPool;
@@ -302,11 +304,12 @@ namespace NetSocket
             else
             {
                 int len = token.Length - index;
-                buf = new byte[len+31];//头
-                token.Offset = token.Offset + index;
-                token.DataPackage.Pack(buf, 0, buf.Length);
-                Array.Copy(token.Data, token.Offset + index, buf, 0, len);
+                buf = new byte[len+ UDPDataPackage.HeadLen];//头
+                token.Offset = token.Offset + index; //移动偏移量
+                token.DataPackage.Pack(buf, 0, buf.Length);//这样做恰好合适，内部分包不判断
+                //Array.Copy(token.Data, token.Offset + index, buf, 0, len);
                 userToken.Data = buf;
+                userToken.Length = buf.Length;
                 index += len;
                 userToken.TokenPool = tokenPool;
             }

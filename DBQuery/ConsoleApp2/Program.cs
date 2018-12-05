@@ -17,8 +17,8 @@ namespace ConsoleApp2
             //session.Port = 7777;
             while (true)
             {
-                session.SendPackage(Encoding.Default.GetBytes("ddd_" + DateTime.Now.ToString()), "127.0.0.1", 7777);
-                Thread.Sleep(2000);
+                session.SendPackage(Encoding.Default.GetBytes("ddd_" + DateTime.Now.ToString()), "192.168.3.182", 7777);
+                Console.ReadLine();
             }
         }
     }

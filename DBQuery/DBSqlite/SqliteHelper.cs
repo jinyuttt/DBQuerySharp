@@ -40,7 +40,10 @@ namespace DBSqlite
         private SQLiteConnection Current { get; set; }
 
 
-        private SqliteHelper()
+        /// <summary>
+        /// 默认内存
+        /// </summary>
+        public SqliteHelper()
         {
             ConnectString = ":memory";
             isMemory = true;

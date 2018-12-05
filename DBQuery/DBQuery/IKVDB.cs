@@ -6,7 +6,7 @@ namespace DBQuery
 {
    public interface IKVDB<TKey,TValue>
     {
-        void Put(TKey key, TValue value);
+        void Put(TKey key, TValue value, int cacheTime=0);
 
         TValue Get(TKey key);
 

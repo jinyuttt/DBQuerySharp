@@ -46,9 +46,20 @@ namespace NetSocket
         public UDPDataPackage DataPackage { get; set; }
 
         /// <summary>
+        /// 如果是缓存，是否是缓存区
+        /// 标记不是本缓存区而是socket的缓存
+        /// </summary>
+        public bool IsCache { get; set; }
+
+        /// <summary>
         /// 为协议分包准备，保持所有分包
         /// </summary>
         public List<AsyncUdpUserToken> ListPack { get; set; }
+
+        /// <summary>
+        /// 协议分包时小包个数
+        /// </summary>
+        public int PackageNum { get; set; }
 
         /// <summary>
         /// 数据区缓存
