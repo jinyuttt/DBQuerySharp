@@ -9,6 +9,8 @@ using System.Reflection;
 using System.IO;
 using RedisClient;
 using QueryPage;
+using System.Text.RegularExpressions;
+
 namespace DBServer
 {
     public class DBServer
@@ -160,6 +162,10 @@ namespace DBServer
         public RequestResult execete( long rspid,DBTransfer transfer)
         {
             RequestResult result = null;
+            if(!string.IsNullOrEmpty(transfer.SQL))
+            {
+                transfer.SQL= Regex.Replace(transfer.SQL, "\\s{2,}", ",");
+            }
             switch (transfer.DBServerType)
             {
                 case DBServerType.LocalKV:

@@ -14,3 +14,4 @@ E:\Study\vs\DBQuerySharp\DBQuerySharp\DBQuery\DBModel\obj\Debug\netstandard2.0\D
 E:\Study\vs\DBQuerySharp\DBQuerySharp\DBQuery\DBModel\obj\Debug\netstandard2.0\DBModel.AssemblyInfo.cs
 E:\Study\vs\DBQuerySharp\DBQuerySharp\DBQuery\DBModel\obj\Debug\netstandard2.0\DBModel.dll
 E:\Study\vs\DBQuerySharp\DBQuerySharp\DBQuery\DBModel\obj\Debug\netstandard2.0\DBModel.pdb
+E:\Study\vs\DBQuerySharp\DBQuerySharp\DBQuery\DBModel\obj\Debug\netstandard2.0\DBModel.csprojAssemblyReference.cache
