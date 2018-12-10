@@ -1309,11 +1309,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Study\\vs\\DBQuery\\DBQuery\\RedisClient\\RedisClient.csproj",
+      "projectUniqueName": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\RedisClient\\RedisClient.csproj",
       "projectName": "RedisClient",
-      "projectPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\RedisClient\\RedisClient.csproj",
+      "projectPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\RedisClient\\RedisClient.csproj",
       "packagesPath": "C:\\Users\\jinyu\\.nuget\\packages\\",
-      "outputPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\RedisClient\\obj\\",
+      "outputPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\RedisClient\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -1334,8 +1334,8 @@
       "frameworks": {
         "netstandard2.0": {
           "projectReferences": {
-            "E:\\Study\\vs\\DBQuery\\DBQuery\\Serialize\\Serializer.csproj": {
-              "projectPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\Serialize\\Serializer.csproj"
+            "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\Serialize\\Serializer.csproj": {
+              "projectPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\Serialize\\Serializer.csproj"
             }
           }
         }

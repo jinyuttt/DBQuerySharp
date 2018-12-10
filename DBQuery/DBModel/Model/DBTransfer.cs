@@ -20,10 +20,45 @@ namespace DBModel
         NoSQL
     }
 
-   /// <summary>
-   /// 传输请求
-   /// </summary>
-  public  class DBTransfer
+    public class QueryPageInfo
+    {
+        /// <summary>
+        /// 查询名称
+        /// </summary>
+        public string QueryName { get; set; }
+
+        /// <summary>
+        /// 页码
+        /// </summary>
+        public int PageNum { get; set; }
+
+
+        #region  当前设计以服务端为准
+        /// <summary>
+        /// 是否缓存分页数据
+        /// 暂时依据服务端配置
+        /// </summary>
+        public bool IsCache { get; set; }
+
+
+        /// <summary>
+        /// 最小设置，无用
+        /// </summary>
+        public int MinPage { get; set; }
+
+        /// <summary>
+        /// 最大也设置，无用
+        /// </summary>
+        public int MaxPage { get; set; }
+
+        #endregion
+
+    }
+
+    /// <summary>
+    /// 传输请求
+    /// </summary>
+    public  class DBTransfer
     {
        
        public DBTransfer()
@@ -93,6 +128,22 @@ namespace DBModel
         ///默认-1
         /// </summary>
         public int TimeOut { get; set; }
-   
+
+        /// <summary>
+        /// 是否是分页查询
+        /// IsQuery=true不判断
+        /// 自定义SQL时，则表明按照SQL语句存储
+        /// 需要设置PageNum
+        /// </summary>
+        public bool IsPage { get; set; }
+
+
+        /// <summary>
+        /// 分页参数
+        /// </summary>
+       public QueryPageInfo PageInfo { get; set; }
+
     }
+
+    
 }

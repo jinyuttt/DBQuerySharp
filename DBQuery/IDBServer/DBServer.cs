@@ -8,7 +8,7 @@ using System.Data;
 using System.Reflection;
 using System.IO;
 using RedisClient;
-
+using QueryPage;
 namespace DBServer
 {
     public class DBServer
@@ -18,8 +18,8 @@ namespace DBServer
         private SqliteHelper memHelper = null;
         private Dictionary<string, object> dicModels = null;
         private LocalCache<object, object> localCache = null;
-
-             # region 默认值
+        private QueryPage.QueryPage queryPage = null;
+        #region 默认值
             string kvdir = "";
             
                   #endregion
@@ -176,6 +176,7 @@ namespace DBServer
                     break;
                 case DBServerType.ServerSQL:
                     result = ServerSQL(transfer);
+                   // result = ServerSQLWithPage(transfer);
                     break;
                 case DBServerType.NoSQL:
                     result = NoSQL(transfer);
@@ -258,6 +259,81 @@ namespace DBServer
             return result;
         }
 
+        private object QueryPage(DBTransfer transfer)
+        {
+            if(!transfer.IsPage)
+            {
+                return null;
+            }
+            if(queryPage==null)
+            {
+                queryPage = new QueryPage.QueryPage();
+                queryPage.PageConfig = new QueryPageConfig();
+                queryPage.PageConfig.LoadConfig();//读取默认配置；
+                queryPage.Init();
+            }
+           
+                if (transfer.IsModel)
+                {
+                    return queryPage.GetListModel(transfer.DBCfg, transfer.PageInfo.QueryName, transfer.PageInfo.PageNum);
+                }
+                else
+                {
+                    return queryPage.GetDataTable(transfer.DBCfg, transfer.PageInfo.QueryName, transfer.PageInfo.PageNum);
+                }
+            
+        }
+         
+
+        /// <summary>
+        /// 带分页缓存功能
+        /// 只给一个例子
+        /// </summary>
+        /// <param name="transfer"></param>
+        /// <returns></returns>
+        private RequestResult ServerSQLWithPage(DBTransfer transfer)
+        {
+            object queryResult = null;
+            if (transfer.IsPage)
+            {
+                if(!string.IsNullOrEmpty(transfer.SQL)&&string.IsNullOrEmpty(transfer.PageInfo.QueryName))
+                {
+                    transfer.PageInfo.QueryName = transfer.SQL;
+                }
+                queryResult = QueryPage(transfer);
+                if(queryResult == null)
+                {
+                    //
+                    if (string.IsNullOrEmpty(transfer.SQL))
+                    {
+                        //没有自定义查询
+                        if (transfer.PageInfo.PageNum < 1)
+                        {
+                            transfer.SQL = queryPage.GetPageSql(transfer.DBCfg, transfer.PageInfo.QueryName, transfer.PageInfo.MinPage, transfer.PageInfo.MaxPage);
+                        }
+                        else
+                        {
+                            transfer.SQL = queryPage.GetPageSql(transfer.DBCfg, transfer.PageInfo.QueryName, transfer.PageInfo.PageNum);
+                        }
+                    }
+                    var result=ServerSQL(transfer);
+                    if(result.Error==ErrorCode.Sucess&&transfer.PageInfo.PageNum>0)
+                    {
+                        queryPage.Add(transfer.DBCfg, transfer.PageInfo.QueryName, transfer.PageInfo.PageNum, result.Result);
+                    }
+                    return result;
+                }
+                RequestResult qresult = new RequestResult();
+                qresult.Result = queryResult;
+                qresult.Error = ErrorCode.Sucess;
+                qresult.ErrorMsg = qresult.Error.ToDescriptionString();
+                return qresult;
+            }
+            else
+            {
+                return ServerSQL(transfer);
+            }
+        }
 
         private RequestResult KV(DBTransfer transfer)
         {

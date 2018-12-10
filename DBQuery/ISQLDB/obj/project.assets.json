@@ -198,11 +198,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Study\\vs\\DBQuery\\DBQuery\\ISQLDB\\ISQLDB.csproj",
+      "projectUniqueName": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\ISQLDB\\ISQLDB.csproj",
       "projectName": "ISQLDB",
-      "projectPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\ISQLDB\\ISQLDB.csproj",
+      "projectPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\ISQLDB\\ISQLDB.csproj",
       "packagesPath": "C:\\Users\\jinyu\\.nuget\\packages\\",
-      "outputPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\ISQLDB\\obj\\",
+      "outputPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\ISQLDB\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -223,8 +223,8 @@
       "frameworks": {
         "netstandard2.0": {
           "projectReferences": {
-            "E:\\Study\\vs\\DBQuery\\DBQuery\\DBModel\\DBModel.csproj": {
-              "projectPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\DBModel\\DBModel.csproj"
+            "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\DBModel\\DBModel.csproj": {
+              "projectPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\DBModel\\DBModel.csproj"
             }
           }
         }

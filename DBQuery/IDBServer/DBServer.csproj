@@ -10,6 +10,7 @@
     <ProjectReference Include="..\DBQuery\IDBQuery.csproj" />
     <ProjectReference Include="..\DBSqlite\DBSqlite.csproj" />
     <ProjectReference Include="..\ISQLDB\ISQLDB.csproj" />
+    <ProjectReference Include="..\QueryPage\QueryPage.csproj" />
     <ProjectReference Include="..\RedisClient\RedisClient.csproj" />
     <ProjectReference Include="..\SQLDB\SQLDB.csproj" />
   </ItemGroup>

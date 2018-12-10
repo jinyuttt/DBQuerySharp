@@ -1506,6 +1506,19 @@
           "bin/placeholder/ISQLDB.dll": {}
         }
       },
+      "QueryPage/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "dependencies": {
+          "Serializer": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/QueryPage.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/QueryPage.dll": {}
+        }
+      },
       "RedisClient/1.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
@@ -5179,6 +5192,11 @@
       "path": "../ISQLDB/ISQLDB.csproj",
       "msbuildProject": "../ISQLDB/ISQLDB.csproj"
     },
+    "QueryPage/1.0.0": {
+      "type": "project",
+      "path": "../QueryPage/QueryPage.csproj",
+      "msbuildProject": "../QueryPage/QueryPage.csproj"
+    },
     "RedisClient/1.0.0": {
       "type": "project",
       "path": "../RedisClient/RedisClient.csproj",
@@ -5203,6 +5221,7 @@
       "IDBQuery >= 1.0.0",
       "ISQLDB >= 1.0.0",
       "NETStandard.Library >= 2.0.3",
+      "QueryPage >= 1.0.0",
       "RedisClient >= 1.0.0",
       "SQLDB >= 1.0.0"
     ]
@@ -5214,11 +5233,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Study\\vs\\DBQuery\\DBQuery\\IDBServer\\DBServer.csproj",
+      "projectUniqueName": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\IDBServer\\DBServer.csproj",
       "projectName": "DBServer",
-      "projectPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\IDBServer\\DBServer.csproj",
+      "projectPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\IDBServer\\DBServer.csproj",
       "packagesPath": "C:\\Users\\jinyu\\.nuget\\packages\\",
-      "outputPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\IDBServer\\obj\\",
+      "outputPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\IDBServer\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -5239,26 +5258,29 @@
       "frameworks": {
         "netstandard2.0": {
           "projectReferences": {
-            "E:\\Study\\vs\\DBQuery\\DBQuery\\BerkeleyDB\\BerkeleyDB.csproj": {
-              "projectPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\BerkeleyDB\\BerkeleyDB.csproj"
+            "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\BerkeleyDB\\BerkeleyDB.csproj": {
+              "projectPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\BerkeleyDB\\BerkeleyDB.csproj"
             },
-            "E:\\Study\\vs\\DBQuery\\DBQuery\\DBModel\\DBModel.csproj": {
-              "projectPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\DBModel\\DBModel.csproj"
+            "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\DBModel\\DBModel.csproj": {
+              "projectPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\DBModel\\DBModel.csproj"
             },
-            "E:\\Study\\vs\\DBQuery\\DBQuery\\DBQuery\\IDBQuery.csproj": {
-              "projectPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\DBQuery\\IDBQuery.csproj"
+            "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\DBQuery\\IDBQuery.csproj": {
+              "projectPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\DBQuery\\IDBQuery.csproj"
             },
-            "E:\\Study\\vs\\DBQuery\\DBQuery\\DBSqlite\\DBSqlite.csproj": {
-              "projectPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\DBSqlite\\DBSqlite.csproj"
+            "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\DBSqlite\\DBSqlite.csproj": {
+              "projectPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\DBSqlite\\DBSqlite.csproj"
             },
-            "E:\\Study\\vs\\DBQuery\\DBQuery\\ISQLDB\\ISQLDB.csproj": {
-              "projectPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\ISQLDB\\ISQLDB.csproj"
+            "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\ISQLDB\\ISQLDB.csproj": {
+              "projectPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\ISQLDB\\ISQLDB.csproj"
             },
-            "E:\\Study\\vs\\DBQuery\\DBQuery\\RedisClient\\RedisClient.csproj": {
-              "projectPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\RedisClient\\RedisClient.csproj"
+            "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\QueryPage\\QueryPage.csproj": {
+              "projectPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\QueryPage\\QueryPage.csproj"
             },
-            "E:\\Study\\vs\\DBQuery\\DBQuery\\SQLDB\\SQLDB.csproj": {
-              "projectPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\SQLDB\\SQLDB.csproj"
+            "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\RedisClient\\RedisClient.csproj": {
+              "projectPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\RedisClient\\RedisClient.csproj"
+            },
+            "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\SQLDB\\SQLDB.csproj": {
+              "projectPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\SQLDB\\SQLDB.csproj"
             }
           }
         }

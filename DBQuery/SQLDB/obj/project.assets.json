@@ -4765,11 +4765,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Study\\vs\\DBQuery\\DBQuery\\SQLDB\\SQLDB.csproj",
+      "projectUniqueName": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\SQLDB\\SQLDB.csproj",
       "projectName": "SQLDB",
-      "projectPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\SQLDB\\SQLDB.csproj",
+      "projectPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\SQLDB\\SQLDB.csproj",
       "packagesPath": "C:\\Users\\jinyu\\.nuget\\packages\\",
-      "outputPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\SQLDB\\obj\\",
+      "outputPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\SQLDB\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -4790,11 +4790,11 @@
       "frameworks": {
         "netstandard2.0": {
           "projectReferences": {
-            "E:\\Study\\vs\\DBQuery\\DBQuery\\Hikari\\Hikari.csproj": {
-              "projectPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\Hikari\\Hikari.csproj"
+            "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\Hikari\\Hikari.csproj": {
+              "projectPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\Hikari\\Hikari.csproj"
             },
-            "E:\\Study\\vs\\DBQuery\\DBQuery\\ISQLDB\\ISQLDB.csproj": {
-              "projectPath": "E:\\Study\\vs\\DBQuery\\DBQuery\\ISQLDB\\ISQLDB.csproj"
+            "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\ISQLDB\\ISQLDB.csproj": {
+              "projectPath": "E:\\Study\\vs\\DBQuerySharp\\DBQuerySharp\\DBQuery\\ISQLDB\\ISQLDB.csproj"
             }
           }
         }
